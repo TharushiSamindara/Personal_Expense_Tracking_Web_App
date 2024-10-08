@@ -1,17 +1,30 @@
 "use client";
 
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function SignInPage() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Email:', email);
     console.log('Username:', username);
     console.log('Password:', password);
+
+    try {
+      const response = await axios.post('http://localhost:8080/login/create', {
+        "username": username,
+        "password": password,
+        "email": email
+      });
+      console.log('Success:', response.data);
+    } catch (error) {
+      console.error('Error:', error.response?.data || error.message);
+    }
+    
   };
 
   return (

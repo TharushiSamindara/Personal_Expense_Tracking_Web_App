@@ -1,4 +1,3 @@
-// app/update-password/page.js
 "use client";
 
 import React, { useState } from 'react';
@@ -9,7 +8,6 @@ function UpdatePasswordPage() {
 
   const handleUpdate = (e) => {
     e.preventDefault();
-    // Handle the password update logic here, such as sending data to an API
     console.log('Email:', email);
     console.log('New Password:', newPassword);
   };
