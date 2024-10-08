@@ -43,7 +43,7 @@ export class ExpenseController {
     ): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
         return this.expenseService.findByUsername(username);
     }
-
+/****************************/
     @Get('getUserExpenseAmount/:username/:expenseName')
     async getAllUserExpenseAmount(
         @Param('username') username: string,
