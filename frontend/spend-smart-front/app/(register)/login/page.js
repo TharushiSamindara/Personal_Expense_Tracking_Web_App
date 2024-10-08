@@ -1,27 +1,39 @@
-// app/login/page.js
 "use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import styles from './LoginPage.module.css';
 
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle the login logic here, such as sending data to an API
-    console.log('Username:', username);
-    console.log('Password:', password);
+    try {
+      const response = await axios.get(`http://localhost:8080/login/read/${username}/${password}`);
+      
+      if (response.data) {
+        console.log('Login successful:', response.data);
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('Login failed:', error.response?.data || error.message);
+      alert('Invalid username or password');
+    }
   };
 
   return (
-    <div className="login-page">
-      <h2>Login</h2>
+    <div className={styles['login-page']}>
+      <h2 className={styles.title}>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label className={styles.label} htmlFor="username">Username:</label>
           <input
+            className={styles.input}
             type="text"
             id="username"
             value={username}
@@ -30,8 +42,9 @@ function LoginPage() {
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label className={styles.label} htmlFor="password">Password:</label>
           <input
+            className={styles.input}
             type="password"
             id="password"
             value={password}
@@ -39,15 +52,12 @@ function LoginPage() {
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button className={styles.button} type="submit">Login</button>
       </form>
-      <div className="update-password-link">
-        <Link href="/update-password">
-          Update Password
-        </Link>
-      </div>
     </div>
   );
 }
 
 export default LoginPage;
+
+

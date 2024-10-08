@@ -21,20 +21,5 @@ export class LoginController {
     ) {
         return this.loginService.login(username, password);
     }
-
-    // Send a password reset email to the user
-    @Post('send-reset-email')
-    async sendPasswordResetEmail(@Body('email') email: string): Promise<string> {
-        return this.loginService.sendPasswordResetEmail(email);
-    }
-
-    // Reset the password using a reset token
-    @Post('reset-password')
-    async resetPassword(
-        @Query('token') token: string, 
-        @Body('newPassword') newPassword: string
-    ): Promise<string> {
-        return this.loginService.resetPassword(token, newPassword);
-    }
 }
 
