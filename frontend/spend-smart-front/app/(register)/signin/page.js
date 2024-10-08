@@ -77,13 +77,14 @@ export default SignInPage;*/
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import styles from './SigninPage.module.css'; // Ensure the CSS file is named 'SigninPage.module.css'
 
 function SignInPage() {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Email:', email);
@@ -92,25 +93,26 @@ function SignInPage() {
 
     try {
       const response = await axios.post('http://localhost:8080/login/create', {
-        "username": username,
-        "password": password,
-        "email": email
+        username,
+        password,
+        email,
       });
       router.push('/dashboard');
       console.log('Success:', response.data);
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
-      alert("Your username or email is already taken");
+      alert('Your username or email is already taken');
     }
   };
 
   return (
-    <div className="signin-page">
-      <h2>Sign In</h2>
+    <div className={styles['signin-page']}>
+      <h2 className={styles.title}>Sign In</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="email">Email:</label>
+          <label className={styles.label} htmlFor="email">Email:</label>
           <input
+            className={styles.input}
             type="email"
             id="email"
             value={email}
@@ -119,8 +121,9 @@ function SignInPage() {
           />
         </div>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label className={styles.label} htmlFor="username">Username:</label>
           <input
+            className={styles.input}
             type="text"
             id="username"
             value={username}
@@ -129,8 +132,9 @@ function SignInPage() {
           />
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label className={styles.label} htmlFor="password">Password:</label>
           <input
+            className={styles.input}
             type="password"
             id="password"
             value={password}
@@ -138,12 +142,10 @@ function SignInPage() {
             required
           />
         </div>
-        <button type="submit">Sign In</button>
+        <button className={styles.button} type="submit">Sign In</button>
       </form>
     </div>
   );
 }
 
 export default SignInPage;
-
-
