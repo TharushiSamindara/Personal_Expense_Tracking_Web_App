@@ -34,16 +34,19 @@ const ExpensesStructure = ({ username }) => {
   // Sum expenses by name for the current month
   const expenseSums = expenses && Array.isArray(expenses)
     ? expenses.reduce((acc, user) => {
-        user.newExpenses.forEach((expense) => {
-          const expenseDate = new Date(expense.date);
-          if (
-            expenseDate.getMonth() === currentMonth &&
-            expenseDate.getFullYear() === currentYear
-          ) {
-            const { name, amount } = expense;
-            acc[name] = (acc[name] || 0) + amount; // Sum expenses by name
-          }
-        });
+        // Ensure user.newExpenses is an array before proceeding
+        if (Array.isArray(user.newExpenses)) {
+          user.newExpenses.forEach((expense) => {
+            const expenseDate = new Date(expense.date);
+            if (
+              expenseDate.getMonth() === currentMonth &&
+              expenseDate.getFullYear() === currentYear
+            ) {
+              const { name, amount } = expense;
+              acc[name] = (acc[name] || 0) + amount; // Sum expenses by name
+            }
+          });
+        }
         return acc;
       }, {})
     : {};
