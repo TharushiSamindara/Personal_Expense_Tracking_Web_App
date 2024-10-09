@@ -45,10 +45,16 @@ export class ExpenseController {
         return this.expenseService.findAll();
     }
 
-    @Get('getUserExpense')
+    /*@Get('getUserExpense')
     async getAllUserExpense(
         @Query('username') username: string
     ): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
+        return this.expenseService.findByUsername(username);
+    }*/
+    @Get('getUserExpense')
+    async getAllUserExpense(
+        @Query('username') username: string
+    ): Promise<{ username: string; expenses: { name: string; amount: number; date: string }[] }> {
         return this.expenseService.findByUsername(username);
     }
 /****************************/

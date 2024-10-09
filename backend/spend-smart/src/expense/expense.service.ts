@@ -79,7 +79,7 @@ export class ExpenseService {
     
 
     //get only expenses for relevent user
-    async findByUsername(username: string): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
+    /*async findByUsername(username: string): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
         const expenseRecord = await this.expenseModel.findOne({ username });
 
         if (!expenseRecord) {
@@ -90,7 +90,19 @@ export class ExpenseService {
             username: expenseRecord.username,
             expenses: expenseRecord.expenses,
         };
-    }
+    }*/
+    async findByUsername(username: string): Promise<{ username: string; expenses: { name: string; amount: number; date: string }[] }> {
+        const expenseRecord = await this.expenseModel.findOne({ username });
+    
+        if (!expenseRecord) {
+            throw new NotFoundException('User not found');
+        }
+    
+        return {
+            username: expenseRecord.username,
+            expenses: expenseRecord.expenses,
+        };
+        }
 
     //update expense using expense name
     async updateExpense(username: string, expenseName: string, updateExpenseDto: UpdateExpenseDto): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
