@@ -390,8 +390,8 @@ export default Dashboard;*/
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import AddExpense from '../AddExpense/page.js';  // Import the AddExpense component
-import ExpensesStructure from '../ExpensesStructure/page.js';  // Import the ExpensesStructure component
+import AddExpense from './(components)/AddExpense/page.js';  // Import the AddExpense component
+import ExpensesStructure from './(components)/ExpensesStructure/page.js';  // Import the ExpensesStructure component
 
 function Dashboard() {
   const [balance, setBalance] = useState('');
