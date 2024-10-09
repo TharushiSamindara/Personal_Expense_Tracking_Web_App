@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -25,10 +26,10 @@ function Dashboard() {
       router.push('/login');
     }
   }, [searchParams, router]);
-
+/*getUserExpense*/
   const fetchUserExpenses = async (username) => {
     try {
-      const response = await fetch(`http://localhost:8080/expense/getUserExpense?username=${username}`);
+      const response = await fetch(`http://localhost:8080/expense/user-expenses?username=${username}`);
       const data = await response.json();
       console.log('Fetched data:', data); // Debugging line
 
