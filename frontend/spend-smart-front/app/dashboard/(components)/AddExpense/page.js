@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Ensure this is at the top if using Next.js
 import React, { useState } from 'react';
 
 const AddExpense = ({ username, setExpenses }) => {
@@ -27,14 +27,14 @@ const AddExpense = ({ username, setExpenses }) => {
       };
 
       try {
-        const response = await fetch('http://localhost:8080/expense/add', {
+        const response = await fetch('http://localhost:8080/expense/create', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: username,
-            newExpenses: [newExpense],
+            username: username, // Include the username
+            expense: newExpense, // Change `newExpenses` to `expense`
           }),
         });
 
@@ -45,7 +45,24 @@ const AddExpense = ({ username, setExpenses }) => {
         const data = await response.json();
         console.log('Expense added successfully:', data);
 
-        setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
+        // Update the expenses state
+        setExpenses((prevExpenses) => {
+          const existingExpenseIndex = prevExpenses.findIndex(
+            (expense) => expense.name === newExpense.name && expense.date === newExpense.date
+          );
+
+          if (existingExpenseIndex >= 0) {
+            // If an expense with the same name and date exists, update its amount
+            const updatedExpenses = [...prevExpenses];
+            updatedExpenses[existingExpenseIndex].amount += newExpense.amount;
+            return updatedExpenses;
+          } else {
+            // Otherwise, add the new expense to the list
+            return [...prevExpenses, newExpense];
+          }
+        });
+
+        // Reset the input fields
         setExpenseAmount('');
         setExpenseDate('');
         setExpenseCategory('');
