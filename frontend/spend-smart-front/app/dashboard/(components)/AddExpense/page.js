@@ -1,4 +1,4 @@
-// AddExpense.js
+"use client";
 import React, { useState } from 'react';
 
 const AddExpense = ({ username, setExpenses }) => {

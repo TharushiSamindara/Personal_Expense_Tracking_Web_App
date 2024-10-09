@@ -1,4 +1,4 @@
-// ExpensesStructure.js
+"use client";
 import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -17,7 +17,7 @@ const ExpensesStructure = ({ username }) => {
           throw new Error('Failed to fetch expenses');
         }
         const data = await response.json();
-        setExpenses(data.data);
+        setExpenses(data);
       } catch (error) {
         console.error('Error fetching expenses:', error);
       }
@@ -30,8 +30,13 @@ const ExpensesStructure = ({ username }) => {
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
 
-  // Filter expenses for the current month
-  const currentMonthExpenses = expenses.filter(expense => {
+  // Extract expenses from the nested structure and filter for the current month
+  const allExpenses = expenses.flatMap(expense => expense.newExpenses.map(newExpense => ({
+    ...newExpense,
+    username: expense.username,
+  })));
+
+  const currentMonthExpenses = allExpenses.filter(expense => {
     const expenseDate = new Date(expense.date);
     return (
       expenseDate.getMonth() === currentMonth &&

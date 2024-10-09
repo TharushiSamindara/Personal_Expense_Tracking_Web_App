@@ -41,7 +41,7 @@ export class Expense {
 export const ExpenseSchema = SchemaFactory.createForClass(Expense);
 */
 // src/expense/schemas/expense.schema.ts
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+/*import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
@@ -59,6 +59,25 @@ export class Expense extends Document {
   date: string;
 }
 
+export const ExpenseSchema = SchemaFactory.createForClass(Expense);*/
+// src/expenses/schemas/expense.schema.ts
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+export type ExpenseDocument = Expense & Document;
+
+@Schema()
+export class Expense {
+  @Prop({ required: true })
+  username: string;
+
+  @Prop({ type: [{ name: String, amount: Number, date: String }] })
+  newExpenses: {
+    name: string;
+    amount: number;
+    date: string;
+  }[];
+}
+
 export const ExpenseSchema = SchemaFactory.createForClass(Expense);
-
-

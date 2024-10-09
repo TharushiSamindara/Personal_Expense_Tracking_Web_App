@@ -1,10 +1,10 @@
-/*import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoginModule } from './login/login.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ExpenseModule } from './expense/expense.module';
+import { ExpensesModule } from './expense/expense.module';
 
 @Module({
   imports: [
@@ -15,14 +15,14 @@ import { ExpenseModule } from './expense/expense.module';
     
     MongooseModule.forRoot(process.env.DB_URI),
     LoginModule,
-    ExpenseModule],
+    ExpensesModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}*/
+export class AppModule {}
 
 
-// src/app.module.ts
+/*// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ExpenseModule } from './expense/expense.module';
@@ -33,5 +33,5 @@ import { ExpenseModule } from './expense/expense.module';
     ExpenseModule,
   ],
 })
-export class AppModule {}
+export class AppModule {}*/
 
