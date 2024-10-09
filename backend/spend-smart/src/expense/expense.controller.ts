@@ -22,6 +22,13 @@ export class ExpenseController {
         }
     }
 
+    /*@Post('add')
+    @UsePipes(new ValidationPipe({ transform: true }))
+    async addExpense(
+        @Body() addExpenseDto: AddExpenseDto
+    ): Promise<Expense> {
+        return this.expenseService.addExpenses(addExpenseDto.username, addExpenseDto.newExpenses);
+    }*/
     @Post('add')
     @UsePipes(new ValidationPipe({ transform: true }))
     async addExpense(
@@ -29,6 +36,7 @@ export class ExpenseController {
     ): Promise<Expense> {
         return this.expenseService.addExpenses(addExpenseDto.username, addExpenseDto.newExpenses);
     }
+    
 
     @Get('getAllAppUsersDetails')
     async getAllExpense(

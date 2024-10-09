@@ -38,7 +38,7 @@ export class ExpenseService {
         }
     }
 
-    //add more expenses
+    /*//add more expenses
     async addExpenses(username: string, newExpenses: ExpenseDto[]): Promise<Expense> {
         try {
             // Find the user by username
@@ -56,7 +56,27 @@ export class ExpenseService {
             console.error('Error adding expenses:', error);
             throw new InternalServerErrorException('Could not add expenses');
         }
+    }*/
+
+    async addExpenses(username: string, newExpenses: ExpenseDto[]): Promise<Expense> {
+        try {
+            // Find the user by username
+            const expenseRecord = await this.expenseModel.findOne({ username });
+    
+            if (!expenseRecord) {
+                throw new NotFoundException('User not found');
+            }
+    
+            // Push new expenses to the existing expenses array
+            expenseRecord.expenses.push(...newExpenses);
+    
+            return await expenseRecord.save();
+        } catch (error) {
+            console.error('Error adding expenses:', error);
+            throw new InternalServerErrorException('Could not add expenses');
+        }
     }
+    
 
     //get only expenses for relevent user
     async findByUsername(username: string): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
