@@ -1,13 +1,13 @@
-"use client";
+"use client"; // Ensure this is at the top if using Next.js
 import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-// Register elements for chart.js
+// Register elements for Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ExpensesStructure = ({ username }) => {
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useState([]); // State to store expenses
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -17,7 +17,8 @@ const ExpensesStructure = ({ username }) => {
           throw new Error('Failed to fetch expenses');
         }
         const data = await response.json();
-        setExpenses(data);
+        console.log('Fetched expenses:', data); // Log the fetched data
+        setExpenses(data); // Set the expenses state to the entire response array
       } catch (error) {
         console.error('Error fetching expenses:', error);
       }
@@ -30,26 +31,29 @@ const ExpensesStructure = ({ username }) => {
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
 
-  // Extract expenses from the nested structure and filter for the current month
-  const allExpenses = expenses.flatMap(expense => expense.newExpenses.map(newExpense => ({
-    ...newExpense,
-    username: expense.username,
-  })));
-
-  const currentMonthExpenses = allExpenses.filter(expense => {
-    const expenseDate = new Date(expense.date);
-    return (
-      expenseDate.getMonth() === currentMonth &&
-      expenseDate.getFullYear() === currentYear
-    );
-  });
+  // Sum expenses by name for the current month
+  const expenseSums = expenses && Array.isArray(expenses)
+    ? expenses.reduce((acc, user) => {
+        user.newExpenses.forEach((expense) => {
+          const expenseDate = new Date(expense.date);
+          if (
+            expenseDate.getMonth() === currentMonth &&
+            expenseDate.getFullYear() === currentYear
+          ) {
+            const { name, amount } = expense;
+            acc[name] = (acc[name] || 0) + amount; // Sum expenses by name
+          }
+        });
+        return acc;
+      }, {})
+    : {};
 
   // Prepare data for the pie chart
   const data = {
-    labels: currentMonthExpenses.map((expense) => expense.name),
+    labels: Object.keys(expenseSums), // Names of the expenses
     datasets: [
       {
-        data: currentMonthExpenses.map((expense) => expense.amount),
+        data: Object.values(expenseSums), // Total amounts for each expense name
         backgroundColor: [
           '#FF6384',
           '#36A2EB',
@@ -73,10 +77,10 @@ const ExpensesStructure = ({ username }) => {
   return (
     <div>
       <h3>Expenses Structure (This Month):</h3>
-      {currentMonthExpenses.length === 0 ? (
-        <div>No expenses available for this month.</div>
+      {Object.keys(expenseSums).length === 0 ? (
+        <div>No expenses available for this month.</div> // Message if no expenses
       ) : (
-        <Pie data={data} />
+        <Pie data={data} /> // Render the pie chart
       )}
     </div>
   );

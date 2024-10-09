@@ -68,7 +68,7 @@ import { Document } from 'mongoose';
 export type ExpenseDocument = Expense & Document;
 
 @Schema()
-export class Expense {
+export class Expense extends Document{
   @Prop({ required: true })
   username: string;
 

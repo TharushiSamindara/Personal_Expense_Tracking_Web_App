@@ -25,5 +25,10 @@ export class ExpenseController {
     return this.expenseService.findUserExpensesForCurrentMonth(username);
   }
 
+    /*@Get('user-expenses')
+  async getUserExpenses(@Query('username') username: string) {
+    return await this.expenseService.getUserExpenses(username);
+  }*/
+
 }
     
