@@ -489,10 +489,8 @@ function Dashboard() {
           </div>
         )}
       </div>
-
-      <AddExpense username={username} setExpenses={setExpenses} /> {/* Use the AddExpense component */}
-      
-      <ExpensesStructure expenses={expenses} /> {/* Use the ExpensesStructure component */}
+      <AddExpense username={username} setExpenses={setExpenses} />
+      <ExpensesStructure username={username} expenses={expenses} />
     </div>
   );
 }

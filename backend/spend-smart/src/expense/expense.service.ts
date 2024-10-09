@@ -13,7 +13,7 @@ export class ExpenseService {
     ){}
     
     //get all
-    async findAll(): Promise<{ username: string; expenses: { name: string; amount: number }[] }[]> {
+    /*async findAll(): Promise<{ username: string; expenses: { name: string; amount: number }[] }[]> {
         const expenses = await this.expenseModel.find().select('username expenses'); // Select only the username and expenses fields
 
         // Map the results to the desired format
@@ -21,10 +21,10 @@ export class ExpenseService {
             username: expense.username,
             expenses: expense.expenses,
         }));
-    }
+    }*/
 
     //create expense
-    async create(createExpenseDto: CreateExpenseDto): Promise<Expense> {
+    /*async create(createExpenseDto: CreateExpenseDto): Promise<Expense> {
         try {
             const { username, expenses } = createExpenseDto;
     
@@ -36,7 +36,7 @@ export class ExpenseService {
             console.error('Error creating expense:', error); // Log the error
             throw new InternalServerErrorException('Could not create expense'); // Throw a more user-friendly error
         }
-    }
+    }*/
 
     /*//add more expenses
     async addExpenses(username: string, newExpenses: ExpenseDto[]): Promise<Expense> {
@@ -58,7 +58,7 @@ export class ExpenseService {
         }
     }*/
 
-    async addExpenses(username: string, newExpenses: ExpenseDto[]): Promise<Expense> {
+    /*async addExpenses(username: string, newExpenses: ExpenseDto[]): Promise<Expense> {
         try {
             // Find the user by username
             const expenseRecord = await this.expenseModel.findOne({ username });
@@ -75,7 +75,7 @@ export class ExpenseService {
             console.error('Error adding expenses:', error);
             throw new InternalServerErrorException('Could not add expenses');
         }
-    }
+    }*/
     
 
     //get only expenses for relevent user
@@ -91,7 +91,7 @@ export class ExpenseService {
             expenses: expenseRecord.expenses,
         };
     }*/
-    async findByUsername(username: string): Promise<{ username: string; expenses: { name: string; amount: number; date: string }[] }> {
+    /*async findByUsername(username: string): Promise<{ username: string; expenses: { name: string; amount: number; date: string }[] }> {
         const expenseRecord = await this.expenseModel.findOne({ username });
     
         if (!expenseRecord) {
@@ -102,10 +102,10 @@ export class ExpenseService {
             username: expenseRecord.username,
             expenses: expenseRecord.expenses,
         };
-        }
+        }*/
 
     //update expense using expense name
-    async updateExpense(username: string, expenseName: string, updateExpenseDto: UpdateExpenseDto): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
+    /*async updateExpense(username: string, expenseName: string, updateExpenseDto: UpdateExpenseDto): Promise<{ username: string; expenses: { name: string; amount: number }[] }> {
         const expenseRecord = await this.expenseModel.findOne({ username });
     
         if (!expenseRecord) {
@@ -134,10 +134,10 @@ export class ExpenseService {
             username: expenseRecord.username,
             expenses: expenseRecord.expenses,
         };
-    }
+    }*/
 
     //remove expense
-    async removeExpense(username: string, expenseName: string) {
+    /*async removeExpense(username: string, expenseName: string) {
         const expenseRecord = await this.expenseModel.findOne({ username });
     
         if (!expenseRecord) {
@@ -156,10 +156,10 @@ export class ExpenseService {
         await expenseRecord.save();
     
         return "Delete Expense from " + username;
-    }
+    }*/
 
     //find expense amount when give username and name of expense
-    async findByUsernameAndExpenseName (username: string, expenseName: string) { 
+    /*async findByUsernameAndExpenseName (username: string, expenseName: string) { 
         const expenseRecord = await this.expenseModel.findOne({ username });
     
         if (!expenseRecord) {
@@ -174,7 +174,22 @@ export class ExpenseService {
         }
 
         return expense.amount;
-    }
+    }*/
+
+
+    /***************************************************************** */
+    
+
+  async addExpense(createExpenseDto: CreateExpenseDto): Promise<Expense> {
+    const newExpense = new this.expenseModel(createExpenseDto);
+    return await newExpense.save();
+  }
+
+  async getUserExpenses(username: string): Promise<Expense[]> {
+    return await this.expenseModel.find({ username }).exec();
+  }
+
+  
     
     
 }

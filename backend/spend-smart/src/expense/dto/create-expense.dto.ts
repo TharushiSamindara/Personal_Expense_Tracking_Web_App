@@ -40,7 +40,7 @@ export class UpdateExpenseDto {
 import { IsArray, IsDateString, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class ExpenseDto {
+/*export class ExpenseDto {
     @IsString()
     name: string;
 
@@ -49,9 +49,27 @@ export class ExpenseDto {
 
     @IsDateString()
     date: string;  // Added to capture the date of the expense
+}*/
+export class AddExpenseDto {
+    @IsString()
+    username: string;
+
+    @IsArray()
+    newExpenses: ExpenseDto[];
 }
 
-export class CreateExpenseDto {
+export class ExpenseDto {
+    @IsString()
+    name: string;
+
+    @IsNumber()
+    amount: number;
+
+    @IsString()
+    date: string; // Ensure the format matches your front-end
+}
+
+/*export class CreateExpenseDto {
     @IsString()
     readonly username: string;
 
@@ -59,9 +77,22 @@ export class CreateExpenseDto {
     @ValidateNested({ each: true })
     @Type(() => ExpenseDto)
     readonly expenses: ExpenseDto[];
-}
+}*/
+export class CreateExpenseDto {
+    @IsString()
+    username: string;
+  
+    @IsString()
+    name: string;
+  
+    @IsNumber()
+    amount: number;
+  
+    @IsDateString()
+    date: string;
+  }
 
-export class AddExpenseDto {
+/*export class AddExpenseDto {
     @IsString()
     readonly username: string;
 
@@ -69,7 +100,7 @@ export class AddExpenseDto {
     @ValidateNested({ each: true })
     @Type(() => ExpenseDto)
     readonly newExpenses: ExpenseDto[];
-}
+}*/
 
 export class UpdateExpenseDto {
     @IsString()
