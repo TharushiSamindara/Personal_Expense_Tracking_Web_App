@@ -4,7 +4,9 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import AddExpense from './(components)/AddExpense/page.js';  // Import the AddExpense component
-import ExpensesStructure from './(components)/ExpensesStructure/page.js';  // Import the ExpensesStructure component
+import ExpensesStructure from './(components)/ExpensesStructure/page.js';
+import DailyExpenses from './(components)/DailyExpenses/page.js';
+
 
 function Dashboard() {
   const [balance, setBalance] = useState('');
@@ -104,6 +106,8 @@ function Dashboard() {
       </div>
       <AddExpense username={username} setExpenses={setExpenses} />
       <ExpensesStructure username={username} expenses={expenses} />
+      <DailyExpenses username={username} />
+      
     </div>
   );
 }

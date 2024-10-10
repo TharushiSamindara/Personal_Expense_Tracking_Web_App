@@ -118,7 +118,7 @@ export class ExpenseDto {
 
 // src/expenses/dto/create-expense.dto.ts
 
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { NewExpenseDto } from './new-expense.dto';
 
@@ -131,3 +131,11 @@ export class CreateExpenseDto {
   @Type(() => NewExpenseDto) // Converts the incoming object to an instance of `NewExpenseDto`.
   expense: NewExpenseDto; // Single expense input each time.
 }
+
+export class SetMaxExpenseDto {
+    @IsNotEmpty()
+    username: string;
+  
+    @IsNumber()
+    maxMonthlyExpense: number;
+  }
