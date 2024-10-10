@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CreateExpenseDto, SetMaxExpenseDto } from './dto/create-expense.dto';
 import { ExpenseService } from './expense.service';
 import { Expense } from './expense.module'; // Replace with your actual Expense model path
@@ -12,18 +12,25 @@ export class ExpenseController {
     @Body() createExpenseDto: CreateExpenseDto
   ): Promise<Expense> {
     const { username, expense } = createExpenseDto;
-    const dateWiseExpenses = this.expenseService.addExpenseDayWise(username, expense);
+    //const dateWiseExpenses = this.expenseService.addExpenseDayWise(username, expense);//Day total
+    const monthWiseExpenses = await this.expenseService.addExpenseMonthly(username, expense);//Monthly total expense
     return this.expenseService.addExpense(username, expense);
   }
 
-  @Post('set-max-expense')
-  async setMaxExpense(@Body() setMaxExpenseDto: SetMaxExpenseDto): Promise<Expense> {
+  //set max expense
+  @Post('set-max-expense/:username')
+  async setMaxExpense(
+    @Body() setMaxExpenseDto: SetMaxExpenseDto,
+    @Param('username') username: string
+  ): Promise<Expense> {
+    setMaxExpenseDto.username = username; // Set the username from the URL
     return this.expenseService.setMaxMonthlyExpense(setMaxExpenseDto);
   }
 
 
 
 
+  //Pie chart
   @Get('user-expenses')
   async getUserExpenses(
     @Query('username') username: string
@@ -31,25 +38,22 @@ export class ExpenseController {
     return this.expenseService.findUserExpensesForCurrentMonth(username);
   }
 
-  /*@Get('monthly-expenses')
-  async getMonthlyExpenses(@Query('username') username: string) {
-    return this.expenseService.getTotalExpensesPerDay(username);
-  }*/
 
+  //Line Graph
   @Get('monthly-expenses')
   async getDailyExpenses(@Query('username') username: string) {
     const expenses = await this.expenseService.getTotalExpensesPerDay(username);
     return expenses; // Returns the daily expenses for each day in the current month
   }
 
-  /*@Get('daily-totals')
-  async getDailyTotals(@Query('username') username: string): Promise<any> {
-    const userExpenses = await this.expenseService.getDailyTotals(username);
-    return userExpenses; // Returns the daily totals as an array of objects
-  }*/
 
 
-  
+    //Total expenses in month
+    @Get('total-expenses/:username')
+    async getTotalExpenses(@Param('username') username: string): Promise<{ total: number }> {
+      const total = await this.expenseService.getTotalExpenses(username);
+      return { total };
+    }
   
 
 }

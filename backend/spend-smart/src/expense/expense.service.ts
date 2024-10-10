@@ -156,7 +156,7 @@ async getTotalExpensesPerDay(username: string) {
     }
   }
   
-
+/*********
   async setMaxMonthlyExpense(setMaxExpenseDto: SetMaxExpenseDto): Promise<Expense> {
     const { username, maxMonthlyExpense } = setMaxExpenseDto;
     const expenseRecord = await this.expenseModel.findOne({ username }).exec();
@@ -168,6 +168,44 @@ async getTotalExpensesPerDay(username: string) {
     } else {
       throw new Error('User not found');
     }
+  }**** */
+
+  async setMaxMonthlyExpense(setMaxExpenseDto: SetMaxExpenseDto): Promise<Expense> {
+    const { username, maxMonthlyExpense } = setMaxExpenseDto;
+    const expense = await this.expenseModel.findOneAndUpdate(
+      { username },
+      { maxMonthlyExpense },
+      { new: true } // Return the updated document
+    );
+
+    if (!expense) {
+      throw new Error('Expense record not found for the specified username');
+    }
+
+    return expense;
   }
 
+
+  async addExpenseMonthly(username: string, expense: NewExpenseDto): Promise<Expense> {
+    const expenseDate = new Date(expense.date);
+    const monthKey = `${expenseDate.getFullYear()}-${expenseDate.getMonth() + 1}`; // Format as "YYYY-MM"
+
+    // Add the expense to the monthly expenses map
+    return this.expenseModel.findOneAndUpdate(
+      { username },
+      { $push: { [`monthlyExpenses.${monthKey}`]: expense } },
+      { new: true, upsert: true }
+    );
+  }
+
+  async getTotalExpenses(username: string): Promise<number> {
+    const userExpenses = await this.expenseModel.findOne({ username }).exec();
+  
+    if (!userExpenses) {
+      return 0;
+    }
+  
+    const total = userExpenses.newExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+    return total;
+  }
 }

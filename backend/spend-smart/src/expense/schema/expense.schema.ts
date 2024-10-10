@@ -37,10 +37,15 @@ export class Expense extends Document {
 
   // New field to store total expenses per day
   @Prop({ type: Map, of: Number, default: {} })
-  dailyTotals: Map<string, number>; // Stores totals like { "2024-10-01": 1000, "2024-10-02": 2000 }
+  dailyTotals: Map<string, number>; 
+
+  @Prop({ type: Map, of: [{ name: String, amount: Number, date: String }], default: {} })
+  monthlyExpenses: Map<string, { name: string; amount: number; date: string }[]>;
 
   @Prop({ required: true, default: 0 })
   maxMonthlyExpense: number;
+
+  
 }
 
 

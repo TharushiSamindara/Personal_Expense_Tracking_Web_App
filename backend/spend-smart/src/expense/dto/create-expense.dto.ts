@@ -132,8 +132,20 @@ export class CreateExpenseDto {
   expense: NewExpenseDto; // Single expense input each time.
 }
 
-export class SetMaxExpenseDto {
+export class AddMonthlyExpenseDto {
     @IsNotEmpty()
+    @IsString()
+    username: string;
+  
+    @ValidateNested()
+    @Type(() => NewExpenseDto)
+    expense: NewExpenseDto;
+  }
+
+
+  export class SetMaxExpenseDto {
+    @IsNotEmpty()
+    @IsString()
     username: string;
   
     @IsNumber()

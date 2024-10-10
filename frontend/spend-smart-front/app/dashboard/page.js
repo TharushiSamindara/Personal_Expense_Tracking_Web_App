@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AddExpense from './(components)/AddExpense/page.js';  // Import the AddExpense component
 import ExpensesStructure from './(components)/ExpensesStructure/page.js';
 import DailyExpenses from './(components)/DailyExpenses/page.js';
+import TotalExpenses from './(components)/TotalExpenses/page.js';
 
 
 function Dashboard() {
@@ -104,12 +105,16 @@ function Dashboard() {
           </div>
         )}
       </div>
+      <TotalExpenses username={username} />
       <AddExpense username={username} setExpenses={setExpenses} />
       <ExpensesStructure username={username} expenses={expenses} />
       <DailyExpenses username={username} />
+      
       
     </div>
   );
 }
 
 export default Dashboard;
+
+/**/
