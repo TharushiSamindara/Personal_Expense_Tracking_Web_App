@@ -10,6 +10,7 @@ import UpdateExpense from './(components)/UpdateExpense/page.js';
 import TotalMonthlyExpenses from './(components)/TotalMonthlyExpenses/page.js';
 import SetMaxMonthlyExpense from './(components)/SetMaxMonthlyExpense/page.js';
 import DisplayBalance from './(components)/DisplayBalance/page.js';
+import ExpenseFilter from './(components)/ExpenseFilter/page.js';
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);
@@ -127,6 +128,8 @@ function Dashboard() {
         <div className="bg-white shadow-md p-4 rounded col-span-1 lg:col-span-1">
           <RemoveExpense username={username} setExpenses={setExpenses} />
         </div>
+
+        <ExpenseFilter username={username} setExpenses={setExpenses} />
 
         {/* Expenses Overview Section */}
         <div className="bg-white shadow-md p-4 rounded col-span-1 lg:col-span-3">

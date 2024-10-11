@@ -98,3 +98,16 @@ export class GetExpensesDto {
   @IsString()
   date: string; // Format: 'YYYY-MM-DD'
 }
+
+export class FilterExpenseDto {
+  @IsString()
+  username: string;
+
+  @IsOptional()
+  @IsString()
+  date?: string;
+
+  @IsOptional()
+  @IsString()
+  name?: string;
+}

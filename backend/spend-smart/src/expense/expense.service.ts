@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateExpenseDto, RemoveExpenseDto, SetMaxMonthlyExpenseDto, UpdateExpenseDto, GetMonthlyExpensesDto, GetExpensesDto } from './dto/create-expense.dto';
+import { CreateExpenseDto, RemoveExpenseDto, SetMaxMonthlyExpenseDto, UpdateExpenseDto, GetMonthlyExpensesDto, GetExpensesDto, FilterExpenseDto } from './dto/create-expense.dto';
 import { Expense, ExpenseDocument } from './schema/expense.schema';
 import { NewExpenseDto } from './dto/new-expense.dto';
 
@@ -228,6 +228,58 @@ export class ExpenseService {
         throw new Error('Could not fetch expenses');
     }
 }
+
+async filterExpenses(filterExpenseDto: FilterExpenseDto): Promise<Expense[]> {
+  const { username, date, name } = filterExpenseDto;
+
+  const filter = { username };
+
+  let expenses = await this.expenseModel.find(filter).exec();
+
+  // Initialize an array to store filtered results
+  let filteredResults = [];
+
+  // If both date and name are provided
+  if (date && name) {
+    filteredResults = expenses.flatMap(exp => 
+      exp.newExpenses.filter(expense => 
+        expense.date === date && expense.name === name
+      ).map(expense => ({
+        name: expense.name,
+        amount: expense.amount,
+        date: expense.date,
+        totalAmount: expense.amount // Assuming this is the amount for that specific entry
+      }))
+    );
+
+  // If only date is provided
+  } else if (date) {
+    filteredResults = expenses.flatMap(exp => 
+      exp.newExpenses.filter(expense => 
+        expense.date === date
+      ).map(expense => ({
+        name: expense.name,
+        amount: expense.amount,
+        date: expense.date
+      }))
+    );
+
+  // If only name is provided
+  } else if (name) {
+    filteredResults = expenses.flatMap(exp => 
+      exp.newExpenses.filter(expense => 
+        expense.name === name
+      ).map(expense => ({
+        name: expense.name,
+        amount: expense.amount,
+        date: expense.date
+      }))
+    );
+  }
+
+  return filteredResults;
+}
+
 
 }
 
