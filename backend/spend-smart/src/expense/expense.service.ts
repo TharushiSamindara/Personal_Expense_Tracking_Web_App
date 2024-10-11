@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateExpenseDto, SetMaxExpenseDto } from './dto/create-expense.dto';
+import { CreateExpenseDto, GetMonthlyExpensesDto, RemoveExpenseDto, SetMaxExpenseDto, UpdateExpenseDto } from './dto/create-expense.dto';
 import { Expense, ExpenseDocument } from './schema/expense.schema';
 import { NewExpenseDto } from './dto/new-expense.dto';
 
@@ -199,4 +199,184 @@ async getTotalExpensesPerDay(username: string) {
     const total = userExpenses.newExpenses.reduce((sum, expense) => sum + expense.amount, 0);
     return total;
   }
+
+  //remove expense
+  async removeExpense(removeExpenseDto: RemoveExpenseDto) {
+    const { username, name, amount, date } = removeExpenseDto;
+
+    // Find the expense document for the user
+    const expenseDoc = await this.expenseModel.findOne({ username });
+
+    if (!expenseDoc) {
+      throw new Error('Expense not found for this user');
+    }
+
+    // Logic to remove expense by name and amount
+    const newExpenses = expenseDoc.newExpenses.filter(exp => {
+      // If date is provided, match with the date; otherwise, ignore the date
+      if (date) {
+        return !(exp.name === name && exp.amount === amount && exp.date === date);
+      }
+      return !(exp.name === name && exp.amount === amount); // Ignore date in the check
+    });
+
+    // Update the expense document
+    expenseDoc.newExpenses = newExpenses;
+    await expenseDoc.save();
+
+    return { newExpenses };
+  }
+
+  /*async removeExpense(
+    username: string,
+    name: string,
+    amount: number,
+    date?: string // Make date optional
+  ): Promise<void> {
+    const filter = { username };
+    
+    try {
+      const expenseDoc = await this.expenseModel.findOne(filter);
+  
+      if (!expenseDoc) {
+        throw new Error('Expense record not found');
+      }
+  
+      // Define a function to find and remove an expense
+      const removeExpense = (expenseList) => {
+        const index = expenseList.findIndex(expense => 
+          expense.name === name && expense.amount === amount && 
+          (date ? expense.date === date : true) // If date is provided, match it; otherwise, ignore date
+        );
+  
+        if (index !== -1) {
+          expenseList.splice(index, 1); // Remove the expense at the found index
+          return true;
+        }
+        return false;
+      };
+  
+      // Try to remove the expense from `newExpenses`
+      const newExpensesUpdated = removeExpense(expenseDoc.newExpenses);
+  
+      // Try to remove the expense from the specific date in `monthlyExpenses`
+      const monthKey = date ? date.slice(0, 7) : ''; // Extract YYYY-MM if date is provided
+      const monthlyExpensesUpdated = monthKey 
+        ? removeExpense(expenseDoc.monthlyExpenses.get(monthKey) || [])
+        : false;
+  
+      if (newExpensesUpdated || monthlyExpensesUpdated) {
+        await expenseDoc.save();
+      } else {
+        throw new Error('Expense not found');
+      }
+    } catch (error) {
+      throw new Error(`Failed to remove expense: ${error.message}`);
+    }
+  }*/
+  
+  /*async removeExpense(removeExpenseDto: RemoveExpenseDto): Promise<Expense> {
+    const { username, name, amount, date } = removeExpenseDto;
+
+    const expense = await this.expenseModel.findOne({ username });
+    if (!expense) {
+      throw new NotFoundException('User not found');
+    }
+
+    let expenseRemoved = false;
+
+    // Remove expense from `newExpenses`
+    if (date) {
+      const dailyExpenses = expense.newExpenses.filter(
+        (e) => !(e.name === name && e.amount === amount && e.date === date),
+      );
+      expense.newExpenses = dailyExpenses;
+
+      // Update dailyTotals
+      if (expense.dailyTotals.has(date)) {
+        expense.dailyTotals.set(
+          date,
+          (expense.dailyTotals.get(date) || 0) - amount,
+        );
+      }
+
+      expenseRemoved = true;
+    } else {
+      // Remove without considering the date
+      const index = expense.newExpenses.findIndex(
+        (e) => e.name === name && e.amount === amount,
+      );
+      if (index !== -1) {
+        expense.newExpenses.splice(index, 1);
+        expenseRemoved = true;
+      }
+    }
+
+    if (!expenseRemoved) {
+      throw new NotFoundException('Expense not found');
+    }
+
+    await expense.save();
+    return expense;
+  }*/
+
+    async updateExpense(updateExpenseDto: UpdateExpenseDto) {
+      const { username, name, amount, date } = updateExpenseDto;
+  
+      // Find the expense document for the user
+      const expenseDoc = await this.expenseModel.findOne({ username });
+  
+      if (!expenseDoc) {
+        throw new Error('Expense not found for this user');
+      }
+  
+      // Find the specific expense to update
+      const expenseToUpdate = expenseDoc.newExpenses.find(exp => {
+        // If date is provided, match with the date; otherwise, ignore the date
+        if (date) {
+          return exp.name === name && exp.amount === amount && exp.date === date;
+        }
+        return exp.name === name && exp.amount === amount; // Ignore date in the check
+      });
+  
+      if (!expenseToUpdate) {
+        throw new Error('Expense not found to update');
+      }
+  
+      // Update the expense amount (you can update more fields if needed)
+      expenseToUpdate.amount = amount; // You can modify this to update other fields
+  
+      // Update the expense document
+      await expenseDoc.save();
+  
+      return { newExpenses: expenseDoc.newExpenses };
+    }
+
+    async getTotalMonthlyExpenses(getMonthlyExpensesDto: GetMonthlyExpensesDto) {
+      const { username } = getMonthlyExpensesDto;
+  
+      // Find the expense document for the user
+      const expenseDoc = await this.expenseModel.findOne({ username });
+  
+      if (!expenseDoc) {
+        throw new Error('No expenses found for this user');
+      }
+  
+      const currentMonth = new Date().getMonth(); // Get the current month (0-11)
+      const currentYear = new Date().getFullYear(); // Get the current year
+  
+      // Filter expenses for the current month
+      const totalExpenses = expenseDoc.newExpenses.reduce((total, expense) => {
+        const expenseDate = new Date(expense.date);
+        if (
+          expenseDate.getMonth() === currentMonth &&
+          expenseDate.getFullYear() === currentYear
+        ) {
+          return total + expense.amount;
+        }
+        return total;
+      }, 0);
+  
+      return { totalExpenses };
+    }
 }

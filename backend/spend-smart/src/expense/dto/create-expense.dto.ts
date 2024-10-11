@@ -118,7 +118,7 @@ export class ExpenseDto {
 
 // src/expenses/dto/create-expense.dto.ts
 
-import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { NewExpenseDto } from './new-expense.dto';
 
@@ -152,4 +152,44 @@ export class AddMonthlyExpenseDto {
     maxMonthlyExpense: number;
   }
 
+  export class RemoveExpenseDto {
+    @IsNotEmpty()
+    @IsString()
+    username: string;
   
+    @IsNotEmpty()
+    @IsString()
+    name: string;
+  
+    @IsNotEmpty()
+    @IsNumber()
+    amount: number;
+  
+    @IsOptional()
+    @IsString()
+    date?: string;
+  }
+
+  export class UpdateExpenseDto {
+    @IsNotEmpty()
+    @IsString()
+    username: string;
+  
+    @IsNotEmpty()
+    @IsString()
+    name: string;
+  
+    @IsNotEmpty()
+    @IsNumber()
+    amount: number;
+  
+    @IsOptional()
+    @IsString()
+    date?: string; // Mark date as optional
+  }
+
+  export class GetMonthlyExpensesDto {
+    @IsNotEmpty()
+    @IsString()
+    username: string;
+  }

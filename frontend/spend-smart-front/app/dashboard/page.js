@@ -285,6 +285,9 @@ import AddExpense from './(components)/AddExpense/page.js';
 import ExpensesStructure from './(components)/ExpensesStructure/page.js';
 import DailyExpenses from './(components)/DailyExpenses/page.js';
 import TotalExpenses from './(components)/TotalExpenses/page.js';
+import RemoveExpense from './(components)/RemoveExpense/page.js';
+import UpdateExpense from './(components)/UpdateExpense/page.js';
+import TotalMonthlyExpenses from './(components)/TotalMonthlyExpenses/page.js';
 
 function Dashboard() {
   const [balance, setBalance] = useState('');
@@ -342,6 +345,10 @@ function Dashboard() {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h2 className="text-2xl font-bold mb-4">Expense Management Dashboard</h2>
+
+      {/* Total Expenses Section */}
+      <TotalMonthlyExpenses username={username} />
+        
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Balance Section */}
@@ -417,6 +424,10 @@ function Dashboard() {
         <div className="bg-white shadow-md p-4 rounded col-span-1 lg:col-span-2">
           <AddExpense username={username} setExpenses={setExpenses} />
         </div>
+
+        <UpdateExpense username={username} setExpenses={setExpenses} />
+        
+        <RemoveExpense username={username} setExpenses={setExpenses} />
 
         {/* Combined Expenses Structure and Daily Expenses Section */}
         <div className="bg-white shadow-md p-4 rounded col-span-1 lg:col-span-3">
