@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import { CreateExpenseDto, RemoveExpenseDto, SetMaxMonthlyExpenseDto, UpdateExpenseDto, GetMonthlyExpensesDto } from './dto/create-expense.dto';
+import { CreateExpenseDto, RemoveExpenseDto, SetMaxMonthlyExpenseDto, UpdateExpenseDto, GetMonthlyExpensesDto, GetExpensesDto } from './dto/create-expense.dto';
 import { ExpenseService } from './expense.service';
 import { Expense } from './schema/expense.schema';
 
@@ -62,6 +62,14 @@ export class ExpenseController {
   async getTotalMonthlyExpenses(@Query() query: GetMonthlyExpensesDto) {
     return await this.expenseService.getTotalMonthlyExpenses(query);
   }
+
+  @Get('by-date')
+    async getExpensesByDate(
+        @Query('username') username: string,
+        @Query('date') date: string
+    ) {
+        return await this.expenseService.getExpensesByDate(username, date);
+    }
 }
 
     

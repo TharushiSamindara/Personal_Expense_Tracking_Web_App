@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateExpenseDto, RemoveExpenseDto, SetMaxMonthlyExpenseDto, UpdateExpenseDto, GetMonthlyExpensesDto } from './dto/create-expense.dto';
+import { CreateExpenseDto, RemoveExpenseDto, SetMaxMonthlyExpenseDto, UpdateExpenseDto, GetMonthlyExpensesDto, GetExpensesDto } from './dto/create-expense.dto';
 import { Expense, ExpenseDocument } from './schema/expense.schema';
 import { NewExpenseDto } from './dto/new-expense.dto';
 
@@ -9,7 +9,7 @@ import { NewExpenseDto } from './dto/new-expense.dto';
 export class ExpenseService {
   constructor(@InjectModel(Expense.name) private expenseModel: Model<ExpenseDocument>) {}
 
-  async addExpense(username: string, expense: NewExpenseDto): Promise<Expense> {
+  /*async addExpense(username: string, expense: NewExpenseDto): Promise<Expense> {
     try {
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth();
@@ -37,7 +37,32 @@ export class ExpenseService {
       console.error('Error adding expense:', error);
       throw new NotFoundException('Could not add expense');
     }
-  }
+  }*/
+
+    async addExpense(username: string, expense: NewExpenseDto): Promise<Expense> {
+      try {
+        // Find an existing record for the username.
+        const existingRecord = await this.expenseModel.findOne({ username });
+    
+        if (existingRecord) {
+          // Add the new expense directly without modifying the date or amount.
+          existingRecord.newExpenses.push(expense);
+          return existingRecord.save();
+        } else {
+          // If no existing record is found, create a new one.
+          const newExpenseRecord = new this.expenseModel({
+            username,
+            newExpenses: [expense],
+          });
+          return newExpenseRecord.save();
+        }
+      } catch (error) {
+        console.error('Error adding expense:', error);
+        throw new NotFoundException('Could not add expense');
+      }
+    }
+    
+  
 
   async findAll(username: string): Promise<Expense[]> {
     return this.expenseModel.find({ username }).exec();
@@ -99,24 +124,53 @@ export class ExpenseService {
   }
 
   async updateExpense(updateExpenseDto: UpdateExpenseDto) {
-    const { username, name, amount, date } = updateExpenseDto;
+    try {
+        const { username, name, amount, date } = updateExpenseDto;
 
-    const expenseDoc = await this.expenseModel.findOne({ username });
-    if (!expenseDoc) throw new Error('Expense not found for this user');
+        // Log incoming DTO
+        console.log('Update DTO:', updateExpenseDto);
 
-    const expenseToUpdate = expenseDoc.newExpenses.find(exp => {
-      if (date) {
-        return exp.name === name && exp.amount === amount && exp.date === date;
-      }
-      return exp.name === name && exp.amount === amount;
-    });
+        // Step 1: Find the user's expense document.
+        const expenseDoc = await this.expenseModel.findOne({ username });
+        if (!expenseDoc) {
+            console.error('Expense document not found for this user');
+            throw new Error('Expense document not found for this user');
+        }
 
-    if (!expenseToUpdate) throw new Error('Expense not found to update');
+        // Log the fetched expenseDoc
+        console.log('Fetched expenseDoc:', expenseDoc);
 
-    expenseToUpdate.amount = amount;
-    await expenseDoc.save();
-    return { newExpenses: expenseDoc.newExpenses };
-  }
+        // Step 2: Locate the expense entry in `newExpenses` for the given date and name.
+        const expenseIndex = expenseDoc.newExpenses.findIndex(
+            exp => exp.name === name && exp.date === date
+        );
+
+        // Log the index and condition
+        console.log('Expense Index:', expenseIndex);
+
+        // If the expense for the given name and date is found, update it.
+        if (expenseIndex !== -1) {
+            // Step 3: Replace the amount with the new value.
+            expenseDoc.newExpenses[expenseIndex].amount = amount;
+
+            // Step 4: Save the updated expense document back to the database.
+            await expenseDoc.save();
+
+            console.log('Expense updated successfully');
+            return { newExpenses: expenseDoc.newExpenses, message: 'Expense updated successfully' };
+        } else {
+            console.error('Expense for the given name and date not found');
+            throw new Error('Expense for the given name and date not found');
+        }
+    } catch (error) {
+        console.error('Error updating expense:', error);
+        throw new Error(`Failed to update the expense: ${error.message}`);
+    }
+}
+
+  
+  
+  
 
   async setMaxMonthlyExpense(dto: SetMaxMonthlyExpenseDto) {
     const { username, maxMonthlyExpense } = dto;
@@ -157,5 +211,23 @@ export class ExpenseService {
     const totalAmount = monthlyExpenses.reduce((sum, expense) => sum + expense.amount, 0);
     return { totalAmount };
   }
+
+  //For filter
+  async getExpensesByDate(username: string, date: string): Promise<Expense[]> {
+    const startOfDay = new Date(date);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+    
+    try {
+        return await this.expenseModel.find({
+            username,
+            date: { $gte: startOfDay, $lt: endOfDay }
+        });
+    } catch (error) {
+        console.error('Error fetching expenses:', error);
+        throw new Error('Could not fetch expenses');
+    }
+}
+
 }
 

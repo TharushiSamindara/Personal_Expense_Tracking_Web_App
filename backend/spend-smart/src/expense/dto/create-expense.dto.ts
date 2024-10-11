@@ -12,6 +12,9 @@ export class CreateExpenseDto {
   expense: NewExpenseDto; // Single expense input each time.
 }
 
+
+
+
 export class AddMonthlyExpenseDto {
     @IsNotEmpty()
     @IsString()
@@ -63,10 +66,12 @@ export class AddMonthlyExpenseDto {
     @IsNumber()
     amount: number;
   
-    @IsOptional()
+    @IsNotEmpty()
     @IsString()
-    date?: string; // Mark date as optional
+    date: string;
   }
+  
+  
 
   export class GetMonthlyExpensesDto {
     @IsNotEmpty()
@@ -81,4 +86,15 @@ export class AddMonthlyExpenseDto {
 
     @IsNumber()
     maxMonthlyExpense: number;
+}
+
+//for filter
+export class GetExpensesDto {
+  @IsNotEmpty()
+  @IsString()
+  username: string;
+
+  @IsNotEmpty()
+  @IsString()
+  date: string; // Format: 'YYYY-MM-DD'
 }
