@@ -11,6 +11,7 @@ import TotalMonthlyExpenses from './(components)/TotalMonthlyExpenses/page.js';
 import SetMaxMonthlyExpense from './(components)/SetMaxMonthlyExpense/page.js';
 import DisplayBalance from './(components)/DisplayBalance/page.js';
 import ExpenseFilter from './(components)/ExpenseFilter/page.js';
+import WineDisplay from './(components)/WineDisplay/page.js';
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);
@@ -90,6 +91,11 @@ function Dashboard() {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h2 className="text-3xl font-bold mb-6 text-center">Expense Management Dashboard</h2>
+
+      <div className="flex justify-center" style={{ marginLeft: '96px', marginRight: '96px' }}>
+      <WineDisplay />
+      </div> 
+      <br/>
 
       {/* Show Warning Message */}
       {warningMessage && (
