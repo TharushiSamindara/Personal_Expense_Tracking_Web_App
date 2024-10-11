@@ -177,6 +177,7 @@ function SignInPage() {
       
       // Redirect to the dashboard with username as a query parameter
       router.push(`/dashboard?username=${encodeURIComponent(username)}`);
+      //router.push(`/setMaxExpense?username=${encodeURIComponent(username)}`);
       console.log('Success:', response.data);
     } catch (error) {
       console.error('Error:', error.response?.data || error.message);
