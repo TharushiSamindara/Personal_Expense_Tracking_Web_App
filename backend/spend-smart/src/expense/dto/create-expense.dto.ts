@@ -193,3 +193,12 @@ export class AddMonthlyExpenseDto {
     @IsString()
     username: string;
   }
+
+
+  export class SetMaxMonthlyExpenseDto {
+    @IsString()
+    username: string;
+
+    @IsNumber()
+    maxMonthlyExpense: number;
+}

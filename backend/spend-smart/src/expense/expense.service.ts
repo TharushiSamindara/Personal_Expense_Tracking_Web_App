@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateExpenseDto, GetMonthlyExpensesDto, RemoveExpenseDto, SetMaxExpenseDto, UpdateExpenseDto } from './dto/create-expense.dto';
+import { CreateExpenseDto, GetMonthlyExpensesDto, RemoveExpenseDto, SetMaxExpenseDto, SetMaxMonthlyExpenseDto, UpdateExpenseDto } from './dto/create-expense.dto';
 import { Expense, ExpenseDocument } from './schema/expense.schema';
 import { NewExpenseDto } from './dto/new-expense.dto';
+
 
 @Injectable()
 export class ExpenseService {
@@ -15,6 +16,8 @@ export class ExpenseService {
 
 
 async addExpense(username: string, expense: NewExpenseDto): Promise<Expense> {
+  
+  try {
     // Get the current date
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
@@ -47,7 +50,14 @@ async addExpense(username: string, expense: NewExpenseDto): Promise<Expense> {
             newExpenses: [expense], // Initialize with the single expense
         });
         return newExpenseRecord.save(); // Save the new record
+
+        
     }
+
+  } catch (error) {
+    console.error('Error adding expense:', error);
+    throw new NotFoundException('Could not add expense');
+  }
 }
 
 //get All
@@ -161,7 +171,7 @@ async getTotalExpensesPerDay(username: string) {
   
 
 
-  async setMaxMonthlyExpense(setMaxExpenseDto: SetMaxExpenseDto): Promise<Expense> {
+  /*async setMaxMonthlyExpense(setMaxExpenseDto: SetMaxExpenseDto): Promise<Expense> {
     const { username, maxMonthlyExpense } = setMaxExpenseDto;
     const expense = await this.expenseModel.findOneAndUpdate(
       { username },
@@ -174,7 +184,7 @@ async getTotalExpensesPerDay(username: string) {
     }
 
     return expense;
-  }
+  }*/
 
 
   async addExpenseMonthly(username: string, expense: NewExpenseDto): Promise<Expense> {
@@ -227,98 +237,9 @@ async getTotalExpensesPerDay(username: string) {
     return { newExpenses };
   }
 
-  /*async removeExpense(
-    username: string,
-    name: string,
-    amount: number,
-    date?: string // Make date optional
-  ): Promise<void> {
-    const filter = { username };
-    
-    try {
-      const expenseDoc = await this.expenseModel.findOne(filter);
   
-      if (!expenseDoc) {
-        throw new Error('Expense record not found');
-      }
   
-      // Define a function to find and remove an expense
-      const removeExpense = (expenseList) => {
-        const index = expenseList.findIndex(expense => 
-          expense.name === name && expense.amount === amount && 
-          (date ? expense.date === date : true) // If date is provided, match it; otherwise, ignore date
-        );
   
-        if (index !== -1) {
-          expenseList.splice(index, 1); // Remove the expense at the found index
-          return true;
-        }
-        return false;
-      };
-  
-      // Try to remove the expense from `newExpenses`
-      const newExpensesUpdated = removeExpense(expenseDoc.newExpenses);
-  
-      // Try to remove the expense from the specific date in `monthlyExpenses`
-      const monthKey = date ? date.slice(0, 7) : ''; // Extract YYYY-MM if date is provided
-      const monthlyExpensesUpdated = monthKey 
-        ? removeExpense(expenseDoc.monthlyExpenses.get(monthKey) || [])
-        : false;
-  
-      if (newExpensesUpdated || monthlyExpensesUpdated) {
-        await expenseDoc.save();
-      } else {
-        throw new Error('Expense not found');
-      }
-    } catch (error) {
-      throw new Error(`Failed to remove expense: ${error.message}`);
-    }
-  }*/
-  
-  /*async removeExpense(removeExpenseDto: RemoveExpenseDto): Promise<Expense> {
-    const { username, name, amount, date } = removeExpenseDto;
-
-    const expense = await this.expenseModel.findOne({ username });
-    if (!expense) {
-      throw new NotFoundException('User not found');
-    }
-
-    let expenseRemoved = false;
-
-    // Remove expense from `newExpenses`
-    if (date) {
-      const dailyExpenses = expense.newExpenses.filter(
-        (e) => !(e.name === name && e.amount === amount && e.date === date),
-      );
-      expense.newExpenses = dailyExpenses;
-
-      // Update dailyTotals
-      if (expense.dailyTotals.has(date)) {
-        expense.dailyTotals.set(
-          date,
-          (expense.dailyTotals.get(date) || 0) - amount,
-        );
-      }
-
-      expenseRemoved = true;
-    } else {
-      // Remove without considering the date
-      const index = expense.newExpenses.findIndex(
-        (e) => e.name === name && e.amount === amount,
-      );
-      if (index !== -1) {
-        expense.newExpenses.splice(index, 1);
-        expenseRemoved = true;
-      }
-    }
-
-    if (!expenseRemoved) {
-      throw new NotFoundException('Expense not found');
-    }
-
-    await expense.save();
-    return expense;
-  }*/
 
     async updateExpense(updateExpenseDto: UpdateExpenseDto) {
       const { username, name, amount, date } = updateExpenseDto;
@@ -379,4 +300,82 @@ async getTotalExpensesPerDay(username: string) {
   
       return { totalExpenses };
     }
+
+
+    /*async setMaxMonthlyExpense(dto: SetMaxMonthlyExpenseDto) {
+      const { username, maxMonthlyExpense } = dto;
+
+      // Find the user's latest expense and update it
+      const expense = await Expense.findOne({ username }).sort({ date: -1 }).exec();
+
+      if (expense) {
+          expense.maxMonthlyExpense = maxMonthlyExpense;
+          await expense.save();
+      } else {
+          throw new Error('User expenses not found');
+      }
+
+      return { message: 'Max monthly expense updated successfully.' };
+  }
+
+  async getBalance(username: string) {
+      const expenses = await Expense.find({ username }).exec();
+
+      const totalMonthlyExpense = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+      const maxMonthlyExpense = expenses.length > 0 ? expenses[0].maxMonthlyExpense : 0; // Assuming max is stored in the latest expense
+
+      const balance = maxMonthlyExpense - totalMonthlyExpense;
+
+      return { balance };
+  }*/
+
+      async setMaxMonthlyExpense(dto: SetMaxMonthlyExpenseDto) {
+        const { username, maxMonthlyExpense } = dto;
+    
+        // Find the user's latest expense and update it
+        const expense = await this.expenseModel
+          .findOne({ username })
+          .sort({ date: -1 })
+          .exec();
+    
+        if (expense) {
+          expense.maxMonthlyExpense = maxMonthlyExpense;
+          await expense.save();
+        } else {
+          throw new NotFoundException('User expenses not found');
+        }
+    
+        return maxMonthlyExpense/*{ message: 'Max monthly expense updated successfully.' }*/;
+      }
+
+      async getMaxMonthlyExpense(username: string) {
+        const expense = await this.expenseModel
+            .findOne({ username })
+            .sort({ date: -1 })
+            .exec();
+    
+        return { maxMonthlyExpense: expense ? expense.maxMonthlyExpense : 0 };
+    }
+    
+    
+    async getBalance(username: string) {
+      const userExpenses = await this.expenseModel.findOne({ username }).exec();
+  
+      if (!userExpenses) {
+          throw new NotFoundException('User expenses not found');
+      }
+  
+      const totalExpenses = userExpenses.newExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+      const maxMonthlyExpense = userExpenses.maxMonthlyExpense || 0; // Use a fallback if not set
+  
+      const balance = maxMonthlyExpense - totalExpenses;
+  
+      return {
+          balance,
+          maxMonthlyExpense,
+          totalExpenses,
+      };
+  }
+  
+  
 }

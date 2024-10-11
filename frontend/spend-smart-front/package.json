@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/mongoose": "^5.11.96",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "chartjs-adapter-date-fns": "^3.0.0",
