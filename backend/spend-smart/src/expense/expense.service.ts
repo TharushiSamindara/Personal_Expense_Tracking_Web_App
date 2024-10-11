@@ -7,6 +7,7 @@ import { NewExpenseDto } from './dto/new-expense.dto';
 
 @Injectable()
 export class ExpenseService {
+  
   constructor(
     @InjectModel(Expense.name) 
     private expenseModel: Model<ExpenseDocument>
@@ -49,42 +50,44 @@ async addExpense(username: string, expense: NewExpenseDto): Promise<Expense> {
     }
 }
 
+//get All
+async findAll(username:string): Promise<Expense[]> {
+  const expense = await this.expenseModel.find({username});
+  return expense;
+}
+
+
 //this for return date wise amount of expenses
 async addExpenseDayWise(username: string, expense: { name: string; amount: number; date: string }): Promise<Expense> {
-    // Find the user expense document
-    const userExpenses = await this.expenseModel.findOne({ username }).exec();
-  
-    if (userExpenses) {
+  // Find the user expense document
+  const userExpenses = await this.expenseModel.findOne({ username }).exec();
+  const expenseDate = new Date(expense.date).toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
+
+  if (userExpenses) {
       // Add the new expense to newExpenses array
       userExpenses.newExpenses.push(expense);
-  
-      // Update the dailyTotals map
-      const expenseDate = new Date(expense.date).toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
+
+      // Update the dailyTotals map for the given date
       const currentTotal = userExpenses.dailyTotals.get(expenseDate) || 0;
       userExpenses.dailyTotals.set(expenseDate, currentTotal + expense.amount);
-  
+
       // Save the updated document
       await userExpenses.save();
       return userExpenses;
-    } else {
+  } else {
       // If no document exists, create a new one
       const newExpense = new this.expenseModel({
-        username,
-        newExpenses: [expense],
-        dailyTotals: {
-          [new Date(expense.date).toISOString().split('T')[0]]: expense.amount,
-        },
+          username,
+          newExpenses: [expense],
+          dailyTotals: {
+              [expenseDate]: expense.amount,
+          },
       });
-  
+
       await newExpense.save();
       return newExpense;
-    }
   }
-  
-  
-
-
-
+}
 
 async findUserExpensesForCurrentMonth(username: string): Promise<Expense[]> {
     // Get the start and end dates for the current month
@@ -156,19 +159,7 @@ async getTotalExpensesPerDay(username: string) {
     }
   }
   
-/*********
-  async setMaxMonthlyExpense(setMaxExpenseDto: SetMaxExpenseDto): Promise<Expense> {
-    const { username, maxMonthlyExpense } = setMaxExpenseDto;
-    const expenseRecord = await this.expenseModel.findOne({ username }).exec();
-    
-    if (expenseRecord) {
-      expenseRecord.maxMonthlyExpense = maxMonthlyExpense;
-      await expenseRecord.save();
-      return expenseRecord;
-    } else {
-      throw new Error('User not found');
-    }
-  }**** */
+
 
   async setMaxMonthlyExpense(setMaxExpenseDto: SetMaxExpenseDto): Promise<Expense> {
     const { username, maxMonthlyExpense } = setMaxExpenseDto;

@@ -27,7 +27,11 @@ export class ExpenseController {
     return this.expenseService.setMaxMonthlyExpense(setMaxExpenseDto);
   }
 
-
+  //get All
+  @Get('getAll/:username')
+  async getAllExpense(@Param('username') username: string):Promise<Expense[]>{
+    return this.expenseService.findAll(username);
+  }
 
 
   //Pie chart
