@@ -26,7 +26,7 @@ function WineDisplay() {
       <h2 className="text-lg font-bold">{wine.wine}</h2>
       <p className="text-gray-600">{wine.winery}</p>
       <p className="text-gray-500">{wine.location}</p>
-      <img src={wine.image} alt={wine.wine} className="w-40 h-60 object-cover my-2" />
+      <img src={wine.image} alt={wine.wine} className="w-20 h-80 object-cover my-2 mx-auto" />
       <p>Rating: {wine.rating.average} ({wine.rating.reviews})</p>
     </div>
   );

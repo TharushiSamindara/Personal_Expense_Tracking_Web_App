@@ -40,7 +40,8 @@ const SetMaxMonthlyExpense = ({ username }) => {
 
     return (
         <div className="p-4 bg-white shadow-md rounded">
-            <h4>LKR : {displayMaxMonthlyExpense}</h4>   
+            <h3 className="text-lg font-semibold mb-2">Max Monthly Expense</h3>
+            <span className="font-semibold">LKR : {displayMaxMonthlyExpense}</span>   
             <form onSubmit={handleSubmit} className="flex flex-col mt-2">
                 <input
                     type="number"

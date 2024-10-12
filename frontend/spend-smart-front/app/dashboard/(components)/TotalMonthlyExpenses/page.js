@@ -38,8 +38,9 @@ function TotalMonthlyExpenses({ username }) {
 
   return (
     <div className="bg-white shadow-md p-4 rounded">
+      <h3 className="text-lg font-semibold mb-2">Total Monthly Expense</h3>
       {error && <p className="text-red-500">{error}</p>}
-      <p className="font-semibold">Total Expenses: LKR {totalExpenses}</p>
+      <span className="font-semibold">LKR : {totalExpenses}</span>
     </div>
   );
 }
