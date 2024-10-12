@@ -1,20 +1,26 @@
 "use client";
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-import React, { useState } from 'react';
-
-function RemoveExpense({ username, setExpenses }) {
+function RemoveExpense({ setExpenses }) {
+const searchParams = useSearchParams();
+  const username = searchParams.get('username');
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState('');
 
   const handleRemoveExpense = async () => {
+    if (!username) {
+      alert('Username is required to remove an expense');
+      return;
+    }
+
     try {
-      // Prepare the request body, sending `date` only if it is provided
       const requestBody = {
         username,
         name,
         amount: parseFloat(amount),
-        date: date || undefined, // Send `undefined` if the date is not provided
+        date: date || undefined,
       };
 
       const response = await fetch('http://localhost:8080/expense/remove', {
@@ -74,4 +80,3 @@ function RemoveExpense({ username, setExpenses }) {
 }
 
 export default RemoveExpense;
-
