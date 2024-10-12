@@ -37,7 +37,8 @@ const DisplayBalance = ({ username }) => {
                 <p className="text-lg text-red-600">{error}</p>
             ) : (
                 <p className="text-lg">
-                    Your current balance is: <span className="font-semibold text-green-600">LKR {balance}</span>
+                    <h3 className="text-lg font-semibold mb-2">Balance</h3>
+                    <span className="font-semibold">LKR : {balance}</span>
                 </p>
             )}
         </div>

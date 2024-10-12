@@ -170,6 +170,7 @@ import DailyExpenses from './(components)/DailyExpenses/page.js';
 import TotalMonthlyExpenses from './(components)/TotalMonthlyExpenses/page.js';
 import SetMaxMonthlyExpense from './(components)/SetMaxMonthlyExpense/page.js';
 import DisplayBalance from './(components)/DisplayBalance/page.js';
+import { FaPlus, FaEdit, FaTrash, FaFilter } from 'react-icons/fa';
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);
@@ -255,11 +256,13 @@ function Dashboard() {
           <span className="text-red-600">S</span>mart
         </h1>
 
-        
+        <h1 className="text-2xl font-bold text-black mb-4">
+          Let's Track Personal Expenses
+        </h1>
 
         <div className="flex items-center">
           <FontAwesomeIcon icon={faUserCircle} className="text-2xl mr-2" />
-          <span className="text-lg font-semibold">{username}</span>
+          <span style={{ color: '#6495ED' }} className="text-lg font-semibold">{username}</span>
         </div>
       </header>
 
@@ -267,16 +270,33 @@ function Dashboard() {
 
       <aside className="w-64 bg-[#4169E1] p-4 mt-16">
         {/* Sidebar links */}
-        <Link href={`/add-expense?username=${username}`} className="text-white mb-4 block">Add Expense</Link>
-        <Link href={`/update-expense?username=${username}`} className="text-white mb-4 block">Update Expense</Link>
-        <Link href={`/remove-expense?username=${username}`} className="text-white mb-4 block">Remove Expense</Link>
-        <Link href={`/expense-filter?username=${username}`} className="text-white mb-4 block">Filter Expense</Link>
+        <Link href={`/add-expense?username=${username}`} className="text-white mb-4 block flex items-center">
+          <FaPlus className="mr-2" />
+          Add Expense
+        </Link>
+        <Link href={`/update-expense?username=${username}`} className="text-white mb-4 block flex items-center">
+          <FaEdit className="mr-2" />
+          Update Expense
+        </Link>
+        <Link href={`/remove-expense?username=${username}`} className="text-white mb-4 block flex items-center">
+          <FaTrash className="mr-2" />
+          Remove Expense
+        </Link>
+        <Link href={`/expense-filter?username=${username}`} className="text-white mb-4 block flex items-center">
+          <FaFilter className="mr-2" />
+          Filter Expense
+        </Link>
 
         <div className="mb-4">
           <WineDisplay />
+          <br/>
+        </div>
+        <div className='flex justify-center'>
+        <Link href="/" className="text-white mb-4 block">Logout</Link>
         </div>
 
-        <Link href="/" className="text-white mb-4 block">Logout</Link>
+
+        
       </aside>
 
       <div className="flex-1 p-6 mt-16"> 
@@ -286,28 +306,30 @@ function Dashboard() {
           </div>
         )}
 
-<h1 className="text-3xl font-bold text-black mb-4">
-  Let's Track Personal Expenses
-</h1>
-
         <div className="flex justify-between mb-6">
-          <div className="bg-white shadow-md p-4 rounded w-full lg:w-1/4 mr-2">
-            <h3 className="text-lg font-semibold mb-2">Total Monthly Expense</h3>
+          <div className=" p-4 rounded w-full  mr-2">
+          <table className="bg-[#6495ED] shadow-md p-4 rounded w-full mr-2">
+      <tbody>
+        <tr>
+          <th className="p-3">
             <TotalMonthlyExpenses username={username} />
-          </div>
-          <div className="bg-white shadow-md p-4 rounded w-full lg:w-1/4 mx-2">
-            <h3 className="text-lg font-semibold mb-2">Set Max Monthly Expense</h3>
-            <SetMaxMonthlyExpense username={username} />
-          </div>
-          <div className="bg-white shadow-md p-4 rounded w-full lg:w-1/4 ml-2">
-            <h3 className="text-lg font-semibold mb-2">Current Balance</h3>
+          </th>
+          <th className="p-3">
             <DisplayBalance username={username} />
+          </th>
+          <th className="p-3">
+            <SetMaxMonthlyExpense username={username} />
+          </th>
+        </tr>
+      </tbody>
+    </table>
           </div>
+          
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
-          <div className="bg-white shadow-md p-4 rounded col-span-1 lg:col-span-3">
+          <div className="bg-[#6495ED] shadow-md p-4 rounded col-span-1 lg:col-span-3">
             <h3 className="text-lg font-semibold mb-4">Expenses Overview</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ExpensesStructure username={username} expenses={expenses} />

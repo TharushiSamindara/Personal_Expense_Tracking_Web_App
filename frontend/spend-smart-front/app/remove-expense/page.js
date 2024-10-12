@@ -31,7 +31,7 @@ const searchParams = useSearchParams();
         body: JSON.stringify(requestBody),
       });
 
-      if (!response.ok) {
+      if (!(response.ok)) {
         const errorResponse = await response.json();
         throw new Error(errorResponse.message || 'Failed to remove expense');
       }
