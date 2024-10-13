@@ -125,7 +125,7 @@ function RemoveExpense({ setExpenses }) {
 
       // The response is successful, expect the updated expenses
       const updatedExpenses = await response.json();
-      setExpenses(updatedExpenses.newExpenses);
+      //setExpenses(updatedExpenses.newExpenses);
       setMessage('Expense removed successfully'); // Set success message
     } catch (error) {
       console.error('Error removing expense:', error);
