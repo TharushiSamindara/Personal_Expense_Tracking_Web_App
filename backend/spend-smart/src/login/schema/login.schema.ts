@@ -13,11 +13,11 @@ export class Login {
     @Prop({ unique: true ,  required: true })
     email: String;
 
-    @Prop()
+    /*@Prop()
     resetToken?: string;
 
     @Prop()
-    resetTokenExpires?: Date;
+    resetTokenExpires?: Date;*/
 }
 
 export const LoginSchema = SchemaFactory.createForClass(Login);
