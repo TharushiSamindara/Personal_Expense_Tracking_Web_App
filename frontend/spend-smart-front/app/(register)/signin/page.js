@@ -257,6 +257,11 @@ function SignInPage() {
         email,
       });
 
+      const { token } = response.data;
+
+      // Store the token in local storage
+      localStorage.setItem('token', token);
+
       // Redirect to the dashboard with username as a query parameter
       router.push(`/dashboard?username=${encodeURIComponent(username)}`);
       console.log('Success:', response.data);
