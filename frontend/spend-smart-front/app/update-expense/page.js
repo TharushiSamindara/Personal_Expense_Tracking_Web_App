@@ -121,7 +121,7 @@ const UpdateExpense = () => {
             <Link href={`/expense-filter?username=${username}`} className="text-white hover:text-gray-300">Filter Expense</Link>
             <Link href={`/update-expense?username=${username}`} className="text-white hover:text-gray-300">Update Expense</Link>
             <Link href={`/remove-expense?username=${username}`} className="text-white hover:text-gray-300">Delete Expense</Link>
-            <Link href={`/logout`} className="text-white hover:text-gray-300">Logout</Link>
+            <Link href={`/`} className="text-white hover:text-gray-300">Logout</Link>
           </div>
         </div>
       </nav>
