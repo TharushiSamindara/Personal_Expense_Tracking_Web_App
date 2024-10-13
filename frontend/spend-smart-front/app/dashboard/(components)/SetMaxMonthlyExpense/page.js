@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+/*import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const SetMaxMonthlyExpense = ({ username }) => {
@@ -57,5 +57,75 @@ const SetMaxMonthlyExpense = ({ username }) => {
     );
 };    
 
-export default SetMaxMonthlyExpense;
+export default SetMaxMonthlyExpense;*/
 
+
+
+"use client"; // Ensure this is a client component
+
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const SetMaxMonthlyExpense = ({ username }) => {
+    const [displayMaxMonthlyExpense, setDisplayMaxMonthlyExpense] = useState(0);
+
+    useEffect(() => {
+        if (!username) return; // Do not fetch until username is available
+
+        const fetchMaxMonthlyExpense = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/expense/get-max-monthly-expense?username=${username}`);
+                if (response.data && response.data.maxMonthlyExpense) {
+                    setDisplayMaxMonthlyExpense(response.data.maxMonthlyExpense);
+                } else {
+                    setDisplayMaxMonthlyExpense(0); // Default to 0 if no expense is set
+                }
+            } catch (error) {
+                console.error('Error fetching max monthly expense:', error);
+                setDisplayMaxMonthlyExpense(0); // Default to 0 in case of an error
+            }
+        };
+
+        fetchMaxMonthlyExpense();
+    }, [username]);
+
+    const handleUpdateClick = () => {
+        // Navigate to the Change Max Monthly Expense page
+        window.location.href = `/dashboard/change-max-monthly-expense?username=${encodeURIComponent(username)}`;
+    };
+
+    if (!username) return null; // Prevent rendering until username is available
+
+    return (
+        
+        <div className="p-4 bg-white shadow-md rounded-lg flex justify-between items-center">
+        <div>
+            <h3 className="text-lg font-semibold">Max Monthly Expense</h3>
+            <span className="font-semibold text-xl">LKR: {displayMaxMonthlyExpense}</span>
+        </div>
+        <button
+            onClick={handleUpdateClick}
+            className="flex items-center bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition duration-200"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2" // Icon size and margin
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3h-2v7H5v2h6v7h2v-7h6v-2h-6z"
+                />
+            </svg>
+            Update
+        </button>
+        </div>
+
+    );
+};
+
+export default SetMaxMonthlyExpense;
