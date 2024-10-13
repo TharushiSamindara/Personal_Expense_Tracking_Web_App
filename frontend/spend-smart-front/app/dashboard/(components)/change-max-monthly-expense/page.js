@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation'; // Updated to use search parameters
+import Link from 'next/link';
 
 const ChangeMaxMonthlyExpense = () => {
     const searchParams = useSearchParams();
@@ -52,7 +53,28 @@ const ChangeMaxMonthlyExpense = () => {
     if (!username) return null; // Prevent rendering until username is available
 
     return (
+
+        
         <div className="p-4 bg-white shadow-md rounded">
+
+            {/* Navigation Bar */}
+      <nav className="bg-[#6495ED] p-4 rounded shadow-md mb-6">
+        <div className="container mx-auto flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold text-white">
+            <span className="text-red-500">S</span>pend
+            <span className="text-red-500">S</span>mart
+          </Link>
+          <div className="flex space-x-4">
+            <Link href={`/dashboard?username=${username}`} className="text-white hover:text-gray-300">Dashboard</Link>
+            <Link href={`/add-expense?username=${username}`} className="text-white hover:text-gray-300">Add Expense</Link>
+            <Link href={`/expense-filter?username=${username}`} className="text-white hover:text-gray-300">Filter Expense</Link>
+            <Link href={`/update-expense?username=${username}`} className="text-white hover:text-gray-300">Update Expense</Link>
+            <Link href={`/remove-expense?username=${username}`} className="text-white hover:text-gray-300">Delete Expense</Link>
+            <Link href={`/`} className="text-white hover:text-gray-300">Logout</Link>
+          </div>
+        </div>
+      </nav>
+      
             <h3 className="text-lg font-semibold mb-2">Change Max Monthly Expense</h3>
             <span className="font-semibold">Current Max: LKR : {displayMaxMonthlyExpense}</span>
             <form onSubmit={handleSubmit} className="flex flex-col mt-2">
