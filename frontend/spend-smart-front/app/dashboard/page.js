@@ -182,6 +182,9 @@ function Dashboard() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  //get token
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     const user = searchParams.get('username');
     if (user) {
