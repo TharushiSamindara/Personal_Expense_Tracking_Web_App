@@ -175,7 +175,7 @@ const AddExpense = ({ setExpenses }) => {
         console.log('Expense added successfully:', data);
 
         // Update the state to reflect the newly added expense
-        setExpenses((prevExpenses) => {
+        /*setExpenses((prevExpenses) => {
           const existingExpenseIndex = prevExpenses.findIndex(
             (expense) => expense.name === newExpense.name && expense.date === newExpense.date
           );
@@ -187,7 +187,7 @@ const AddExpense = ({ setExpenses }) => {
           } else {
             return [...prevExpenses, newExpense];
           }
-        });
+        });*/
 
         // Reset input fields after successful addition
         setExpenseAmount('');
